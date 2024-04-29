@@ -1,0 +1,46 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <h1>Posts List</h1>
+
+    <ul style="list-style-type: none; padding: 0;">
+        {% if posts is defined %}
+            {% for post in posts %}
+                <li style="border: 2px solid #ccc; padding: 10px;">
+                <strong style="color: rgb(0, 149, 255);">ID:</strong> {{ post.id }}<br>
+                <strong style="color: rgb(0, 149, 255);">User:</strong> {{ post.username }}<br>
+                <strong style="color: rgb(0, 149, 255);">Title:</strong> {{ post.title }}<br>
+                <strong style="color: rgb(0, 149, 255);">Body:</strong> {{ post.body }}<br>
+                <button class="delete-post" style="border-radius: 5px;"data-post-id="{{ post.id }}">Usuń</button>
+            </li>
+            <br>
+        {% endfor %}
+    {% else %}
+        <li>No posts found</li>
+    {% endif %}
+    </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-post');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    console.log(postId);
+                    deletePost(postId);
+                });
+            });
+
+            function deletePost(postId) {
+                fetch(`/post/${postId}`, {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                        location.reload();
+                })
+                .catch(error => {
+                    console.error('Wystąpił błąd podczas wysyłania żądania DELETE:', error);
+                });
+            }
+        });
+    </script>
+{% endblock %}
